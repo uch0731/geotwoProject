@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
+            type="text/css">
+        <link rel="stylesheet" href="projectMap.css">
+        <script
+            src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+        <title>openlayers - dev-jhs</title>
+        <meta charset="utf-8"/>
+        <title>OpenLayers Scale Control Example</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <link
+            rel="stylesheet"
+            href="https://openlayers.org/en/latest/css/ol.css"
+            type="text/css"/>
+        <style>
+            #scale-bar {
+                position: absolute;
+                bottom: 10px;
+                left: 10px;
+                background-color: rgba(255, 255, 255, 0.7);
+                padding: 5px;
+                border-radius: 5px;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .map {
+                width: 100%;
+                height: 400px;
+            }
+            .ol-tooltip {
+                position: relative;
+                background: rgba(0, 0, 0, 0.5);
+                border-radius: 4px;
+                color: white;
+                padding: 4px 8px;
+                opacity: 0.7;
+                white-space: nowrap;
+                font-size: 12px;
+                cursor: default;
+                user-select: none;
+            }
+            .ol-tooltip-measure {
+                opacity: 1;
+                font-weight: bold;
+            }
+            .ol-tooltip-static {
+                background-color: #ffcc33;
+                color: black;
+                border: 1px solid white;
+            }
+            .ol-tooltip-measure:before,
+            .ol-tooltip-static:before {
+                border-top: 6px solid rgba(0, 0, 0, 0.5);
+                border-right: 6px solid transparent;
+                border-left: 6px solid transparent;
+                content: "";
+                position: absolute;
+                bottom: -6px;
+                margin-left: -7px;
+                left: 50%;
+            }
+            .ol-tooltip-static:before {
+                border-top-color: #ffcc33;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div id="map" class="map"></div>
+        <label for="type">Geometry type:</label>
+        <select id="type">
+            <option value="Polygon">Polygon</option>
+            <option value="LineString">LineString</option>
+            <option value="Circle">circle</option>
+
+        </select>
+
+        <script src="https://openlayers.org/en/latest/build/ol.js"></script>
+        <script>
+            const raster = new ol
+                .layer
+                .Tile({
+                    source: new ol
+                        .source
+                        .OSM()
+                });
+
+            const vectorSource = new ol
+                .source
+                .Vector();
+
+            var vector = new ol
+                .layer
+                .Vector({
+                    source: vectorSource,
+                    style: new ol
+                        .style
+                        .Style({
+                            fill: new ol
+                                .style
+                                .Fill({color: 'rgba(255, 255, 255, 0.2)'}),
+                            stroke: new ol
+                                .style
+                                .Stroke({color: '#ffcc33', width: 2}),
+                            image: new ol
+                                .style
+                                .Circle({
+                                    radius: 7,
+                                    fill: new ol
+                                        .style
+                                        .Fill({color: '#ffcc33'})
+                                })
+                        })
+                });
+
+            const map = new ol.Map({
+                layers: [
+                    new ol
+                        .layer
+                        .Tile({
+                            source: new ol
+                                .source
+                                .OSM()
+                        }),
+                    new ol
+                        .layer
+                        .Vector({
+                            source: new ol
+                                .source
+                                .Vector(),
+                            style: new ol
+                                .style
+                                .Style({
+                                    fill: new ol
+                                        .style
+                                        .Fill({color: 'rgba(255, 255, 255, 0.2)'}),
+                                    stroke: new ol
+                                        .style
+                                        .Stroke({color: '#ffcc33', width: 2}),
+                                    image: new ol
+                                        .style
+                                        .Circle({
+                                            radius: 7,
+                                            fill: new ol
+                                                .style
+                                                .Fill({color: '#ffcc33'})
+                                        })
+                                })
+                        })
+                ],
+                target: 'map',
+                view: new ol.View({
+                    center: [
+                        126, 35 
+                    ],
+                    zoom: 15,
+                    projection: 'EPSG:4326'
+                })
+            });
+
+            map.addLayer(vector);
+            const continuePolygonMsg = 'Click to continue drawing the polygon';
+            const continueLineMsg = 'Click to continue drawing the line';
+            let helpTooltipElement;
+            let helpTooltip;
+            let measureTooltipElement;
+            let measureTooltip;
+            let sketch;
+
+            const pointerMoveHandler = function (evt) {
+                if (evt.dragging) {
+                    return;
+                }
+                let helpMsg = 'Click to start drawing';
+
+                if (sketch) {
+                    const geom = sketch.getGeometry();
+                    if (geom instanceof ol.geom.Polygon) {
+                        helpMsg = continuePolygonMsg;
+                    } else if (geom instanceof ol.geom.LineString) {
+                        helpMsg = continueLineMsg;
+                    }
+                }
+
+                helpTooltipElement.innerHTML = helpMsg;
+                helpTooltip.setPosition(evt.coordinate);
+
+                helpTooltipElement
+                    .classList
+                    .remove('hidden');
+            };
+
+            map.on('pointermove', pointerMoveHandler);
+
+            map
+                .getViewport()
+                .addEventListener('mouseout', function () {
+                    helpTooltipElement
+                        .classList
+                        .add('hidden');
+                });
+
+            const typeSelect = document.getElementById('type');
+            let draw;
+
+            const formatLength = function (line) {
+                const length = ol
+                    .sphere
+                    .getLength(line, { projection: 'EPSG:4326' });
+                    console.log(length);
+                let output;
+                if (length > 100) {
+                    output = Math.round((length / 1000) * 100) / 100 + ' km';
+                } else {
+                    output = Math.round(length * 100) / 100 + ' m';
+                }
+                return output;
+            };
+
+            const formatArea = function (polygon) {
+                const area = ol
+                    .sphere
+                    .getArea(polygon, { projection: 'EPSG:4326' });
+                    console.log(polygon);
+                let output;
+                if (area > 10000) {
+                    output = Math.round((area / 1000000) * 100) / 100 + ' km<sup>2</sup>';
+                } else {
+                    output = Math.round(area * 100) / 100 + ' m<sup>2</sup>';
+                }
+                return output;
+            };
+
+            const style = new ol
+                .style
+                .Style({
+                    fill: new ol
+                        .style
+                        .Fill({color: 'rgba(255, 255, 255, 0.2)'}),
+                    stroke: new ol
+                        .style
+                        .Stroke({
+                            color: 'rgba(0, 0, 0, 0.5)',
+                            lineDash: [
+                                10, 10
+                            ],
+                            width: 2
+                        }),
+                    image: new ol
+                        .style
+                        .Circle({
+                            radius: 5,
+                            stroke: new ol
+                                .style
+                                .Stroke({color: 'rgba(0, 0, 0, 0.7)'}),
+                            fill: new ol
+                                .style
+                                .Fill({color: 'rgba(255, 255, 255, 0.2)'})
+                        })
+                });
+
+            function addInteraction() {
+                const type = typeSelect.value;
+                draw = new ol
+                    .interaction
+                    .Draw({
+                        source: vectorSource,
+                        type: type,
+                        style: function (feature) {
+                            const geometryType = feature
+                                .getGeometry()
+                                .getType();
+                            if (geometryType === type || geometryType === 'Point') {
+                                return style;
+                            }
+                        }
+                    });
+                map.addInteraction(draw);
+
+                createMeasureTooltip();
+                createHelpTooltip();
+
+                let listener;
+                draw.on('drawstart', function (evt) {
+                    sketch = evt.feature;
+                    let tooltipCoord = evt.coordinate;
+
+                    listener = sketch
+                        .getGeometry()
+                        .on('change', function (evt) {
+                            const geom = evt.target;
+                            let output;
+                            if (geom instanceof ol.geom.Polygon) {
+                                output = formatArea(geom);
+                                tooltipCoord = geom
+                                    .getInteriorPoint()
+                                    .getCoordinates();
+                            } else if (geom instanceof ol.geom.LineString) {
+                                output = formatLength(geom);
+                                tooltipCoord = geom.getLastCoordinate();
+                            }else if(geom instanceof ol.geom.Circle) {
+                                var circleToPolygon = ol.geom.Polygon.fromCircle(geom);
+                                output = formatArea(circleToPolygon);
+                                tooltipCoord = circleToPolygon
+                                    .getInteriorPoint()
+                                    .getCoordinates();
+                            }
+                            measureTooltipElement.innerHTML = output;
+                            measureTooltip.setPosition(tooltipCoord);
+                        });
+                });
+
+                draw.on('drawend', function () {
+                    measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
+                    measureTooltip.setOffset([0, -7]);
+                    sketch = null;
+                    measureTooltipElement = null;
+                    createMeasureTooltip();
+                    ol
+                        .Observable
+                        .unByKey(listener);
+                });
+            }
+
+            function createHelpTooltip() {
+                if (helpTooltipElement) {
+                    helpTooltipElement
+                        .parentNode
+                        .removeChild(helpTooltipElement);
+                }
+                helpTooltipElement = document.createElement('div');
+                helpTooltipElement.className = 'ol-tooltip hidden';
+                helpTooltip = new ol.Overlay({
+                    element: helpTooltipElement,
+                    offset: [
+                        15, 0
+                    ],
+                    positioning: 'center-left'
+                });
+                map.addOverlay(helpTooltip);
+            }
+
+            function createMeasureTooltip() {
+                if (measureTooltipElement) {
+                    measureTooltipElement
+                        .parentNode
+                        .removeChild(measureTooltipElement);
+                }
+                measureTooltipElement = document.createElement('div');
+                measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
+                measureTooltip = new ol.Overlay({
+                    element: measureTooltipElement,
+                    offset: [
+                        0, -15
+                    ],
+                    positioning: 'bottom-center',
+                    stopEvent: false,
+                    insertFirst: false
+                });
+                map.addOverlay(measureTooltip);
+            }
+
+            typeSelect.onchange = function () {
+                map.removeInteraction(draw);
+                addInteraction();
+            };
+
+            // addInteraction();
+        </script>
+
+    </body>
+</html>
