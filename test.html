@@ -1,46 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
+        <title>OpenLayers 마커 예제</title>
         <link
             rel="stylesheet"
-            href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
+            href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v6.3.1/css/ol.css"
             type="text/css">
-        <link rel="stylesheet" href="projectMap.css">
-        <script
-            src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-        <title>openlayers - dev-jhs</title>
-        <meta charset="utf-8"/>
-        <title>OpenLayers Scale Control Example</title>
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-        <link
-            rel="stylesheet"
-            href="https://openlayers.org/en/latest/css/ol.css"
-            type="text/css"/>
         <style>
-            #map {
+            .map {
                 width: 100%;
                 height: 400px;
             }
-
-            #scale-bar {
-                position: absolute;
-                bottom: 10px;
-                left: 10px;
-                background-color: rgba(255, 255, 255, 0.7);
-                padding: 5px;
-                border-radius: 5px;
-                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            }
         </style>
+        <script
+            src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
     </head>
     <body>
         <div id="map" class="map"></div>
-        <div id="scale-bar"></div>
-
-        <script src="https://openlayers.org/en/latest/build/ol.js"></script>
-        <script>
+        <script type="text/javascript">
+            // 지도 초기화
             var map = new ol.Map({
                 target: 'map',
                 layers: [
@@ -55,78 +33,48 @@
                 view: new ol.View({
                     center: ol
                         .proj
-                        .fromLonLat([0, 0]),
-                    zoom: 2,
-                    projection: 'EPSG:4326'
+                        .fromLonLat([126.9780, 37.5665]),
+                    zoom: 10
                 })
             });
 
-            var scaleLineControl = new ol
-                .control
-                .ScaleLine();
-            map.addControl(scaleLineControl);
-
-            var scaleBar = document.getElementById('scale-bar');
-            scaleBar.innerHTML = 'Scale: 1 : ' + getScale(map.getView()) + ' km';
-
-            map.on('moveend', function (event) {
-                scaleBar.innerHTML = 'Scale: 1 : ' + getScale(map.getView()) + ' km';
-            });
-
-            function getScale(view) {
-                var projection = view.getProjection();
-                var resolution = view.getResolution();
-                var dpi = window.devicePixelRatio * 96; // Get the actual DPI of the device
-                // console.log(resolution);
-                var metersPerUnit = ol
+            function addOpenLayersMarker(y, x, title, address) {
+                var position = ol
                     .proj
-                    .getPointResolution(projection, resolution, undefined);
-                console.log(metersPerUnit);
-                return (metersPerUnit * 10000).toFixed(3); // Convert to kilometers
+                    .fromLonLat([x, y]);
+
+                var marker = new ol.Feature({
+                    geometry: new ol
+                        .geom
+                        .Point(position),
+                    address: address
+                });
+
+                marker.setStyle(new ol.style.Style({
+                    image: new ol
+                        .style
+                        .Icon({
+                            src: "https://img.icons8.com/material-rounded/24/228BE6/marker.png",
+                            anchor: [0.5, 1]
+                        }),
+                    text: new ol
+                        .style
+                        .Text({offsetY: -25, scale: 1.5})
+                }));
+
+                var vectorSource = new ol
+                    .source
+                    .Vector({features: [marker]});
+
+                var markerLayer = new ol
+                    .layer
+                    .Vector({source: vectorSource});
+
+                map.addLayer(markerLayer);
             }
 
-            // // 그리기 도구 전역 변수 선언
-            // var draw;
-            // // 그리기된 피처를 담을 전역 변수
-
-            // var vectorSource = new ol
-            //     .source
-            //     .Vector();
-
-            // var vectorLayer = new ol
-            //     .layer
-            //     .Vector({
-            //         source: vectorSource // vectorSource를 소스로 사용
-            //     });
-
-            // // Vector 레이어 맵에 추가
-            // map.addLayer(vectorLayer);
-            // // 그리기 도구 생성 및 추가 함수
-            // function addInteraction() {
-            //     draw = new ol
-            //         .interaction
-            //         .Draw({
-            //             source: vectorSource, type: 'LineString' // 그리기 유형 설정 (LineString, Polygon, Circle 등)
-            //         });
-            //     map.addInteraction(draw);
-
-            //     // 그리기 시작 이벤트 리스너 등록
-            //     draw.on('drawstart', function (event) {
-            //         var feature = event.feature;
-            //         // 그리기 시작할 때의 동작 설정 (예: 스타일, 속성 등)
-            //     });
-
-            //     // 그리기 종료 이벤트 리스너 등록
-            //     draw.on('drawend', function (event) {
-            //         var feature = event.feature;
-            //         console.log(feature);
-            //         // vectorSource.addFeature(feature);  그리기된 피처를 vectorSource에 추가 그리기 종료 시의 동작 설정
-            //         // (예: 스타일, 속성 등)
-            //     });
-            // }
-
-            // // 그리기 도구 추가
-            // addInteraction();
+            // 마커 추가
+            addOpenLayersMarker(37.5665, 126.9780, '서울 마커', '서울시청');
         </script>
     </body>
 </html>

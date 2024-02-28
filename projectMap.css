@@ -1,46 +1,45 @@
-.ol-custom-overviewmap{
-  left: 2510px;
-  bottom: 220px;
-  position: fixed;
+/* .ol-custom-overviewmap {
+    left: 2510px;
+    bottom: 220px;
+    position: fixed;
 }
 
-/* OverviewMapControl의 헤더 부분 스타일 */
 .ol-custom-overviewmap .ol-overviewmap-map {
-  /* 여기에 헤더 부분에 대한 스타일을 추가하세요 */
-  position: fixed;
-    right : 50px;
+    position: fixed;
+    right: 50px;
     bottom: 220px;
-    width: 200px; /* 오버뷰맵의 넓이 조절 */
-    height: 150px; /* 오버뷰맵의 높이 조절 */
-    border: 2px solid #000; /* 테두리 스타일 및 색상 조절 */
-    z-index: 0; /* 버튼 뒤에 위치하도록 z-index 설정 */
-}
+    width: 200px;
+    height: 150px;
+    border: 2px solid #000;
+    z-index: 0;
+} */
+
 
 .dropdown-content {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     padding: 12px 16px;
     z-index: 1;
-  }
-  .show {
+}
+.show {
     display: block;
-  }
+}
 
-  #mouseCoordinate {
+/* #mouseCoordinate {
     position: absolute;
-    bottom: 110px;
+    bottom: 210px;
     left: 1200px;
     border-radius: 5px;
     font-size: 14px;
     text-align: center;
-    width: 300px; /* 원하는 가로 크기로 조절 */
-    height: 150px; /* 원하는 세로 크기로 조절 */
-  }
+    width: 300px;
+    height: 50px;
+} */
 
-  .mposition {
+/* .mposition {
     padding: 5px;
     background-color: #f2f2f2;
     border: 1px solid #ccc;
@@ -53,133 +52,520 @@
 }
 
 #scale-bar {
+    position: absolute;
+    bottom: 220px;
+    left: 1000px;
+    background-color: #f2f2f2;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+} */
+
+#btnGoBack,
+#btnGoForward,
+#set-view,
+#zoom-in,
+#zoom-out {
+    background-color: white;
+    color: black;
+    padding: 1px 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid black;
+    cursor: pointer;
+    margin-right: 5px;
+    width: 35px;
+    height: 25px;
+}
+
+.button-container {
+
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#imageDownload,
+#measureCircle,
+#measureLine,
+#measurePolygon,
+#refresh,
+#retrieve {
+    background-color: white;
+    color: black;
+    padding: 1px 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid black;
+    cursor: pointer;
+    margin-right: 5px;
+    width: 35px;
+    height: 25px;
+}
+
+#osm,
+#vworld {
+  background-color: white;
+  color: black;
+  padding: 1px 5px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid black;
+  cursor: pointer;
+  margin-right: 0; /* 간격 없이 딱 붙이기 */
+  width: 100px;
+  height: 50px;
+}
+
+
+#btnGoBack:hover,
+#btnGoForward:hover,
+#set-view:hover,
+#zoom-in:hover,
+#zoom-out:hover,
+#imageDownload:hover,
+#measureCircle:hover,
+#measureLine:hover,
+#measurePolygon:hover,
+#refresh:hover,
+#retrieve:hover,
+#osm:hover,
+#vworld:hover {
+    background-color: skyblue;
+}
+
+
+
+.draw-container {
+
+    position: fixed;
+    top: 140px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.download-container {
+
+    position: fixed;
+    top: 250px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.retrieve-container {
+
+    position: fixed;
+    top: 280px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.custom-checkbox {
+    /* custom-checkbox 스타일 */
+    background-color: #f1f1f1;
+}
+
+.custom-checkbox.selected {
+    /* 선택된 custom-checkbox 스타일 */
+    background-color: #CCCCCC;
+    font-weight: bold;
+}
+
+.context-menu {
+    /* 컨텍스트 메뉴 스타일 */
+    position: absolute;
+    background-color: white;
+    border: 1px solid #CCCCCC;
+    padding: 10px;
+    display: none;
+}
+
+.background-container {
+  position: fixed;
+  top: 10px;
+  right: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.background-container * {
+  margin: 0;
+}
+
+
+#layerButton {
+  width: 200px;
+  background-color: white;
+  color: black;
+  font-weight: bold;
   position: absolute;
-  bottom: 220px;
-  left: 1000px;
-  background-color: #f2f2f2;
+  top: 60px; /* 원하는 위치로 조절해주세요 */
+  right: 100px; /* 원하는 위치로 조절해주세요 */
+  padding: 5px 10px; /* 좌우 여백을 조절해주세요 */
+}
+
+#layerDropdown {
+  position: absolute;
+  top: 8.2%; /* layerButton 아래로 위치시키기 위해 top 값을 100%로 설정합니다 */
+  right: 105px; /* 좌측 정렬 */
+  /* 기타 원하는 스타일 속성을 추가로 적용해주세요 */
+}
+
+.ol-tooltip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    opacity: 0.7;
+    white-space: nowrap;
+    font-size: 12px;
+    cursor: default;
+    user-select: none;
+}
+.ol-tooltip-measure {
+    opacity: 1;
+    font-weight: bold;
+}
+.ol-tooltip-static {
+    background-color: #ffcc33;
+    color: black;
+    border: 1px solid white;
+}
+.ol-tooltip-measure:before,
+.ol-tooltip-static:before {
+    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    margin-left: -7px;
+    left: 50%;
+}
+.ol-tooltip-static:before {
+    border-top-color: #ffcc33;
+}
+
+.ol-custom-overviewmap{
+  position: fixed;
+  left: 98%;
+  bottom: 15.5%;
+  z-index: 999;
+}
+
+.ol-custom-overviewmap .ol-overviewmap-map {
+  position: fixed;
+  right: 2%;
+  bottom: 2%;
+  width: 20%; /* 오버뷰맵의 넓이 조절 */
+  height: 15%; /* 오버뷰맵의 높이 조절 */
+  border: 2px solid #000; /* 테두리 스타일 및 색상 조절 */
+  z-index: 0; /* 버튼 뒤에 위치하도록 z-index 설정 */
+}
+
+#mouseCoordinate {
+  position: absolute;
+  bottom: 15%;
+  left: 65%;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  width: 30%; /* 원하는 가로 크기로 조절 */
+}
+
+.mposition {
+  bottom: 15%;
+  padding: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 1%;
+  max-width: 250px;
+  border-radius: 5px;
+}
+
+#scale {
+  display: flex;
+  position: absolute;
+  bottom: 15%;
+  left: 45%;
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+
+}
+
+#scale-bar {
+  display: flex;
+  position: absolute;
+  bottom: 15.7%;
+  left: 55%;
+  transform: translateX(-50%);
+  background-color: white;
   padding: 5px;
   border-radius: 5px;
   font-weight: bold;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+.color-change.active {
+  background-color: skyblue; /* 선택된 버튼의 배경색 */
 }
 
-#set-view, #zoom-in, #zoom-out, #btnGoBack, #btnGoForward{
-  background-color: white;
-  color: black;
-  padding: 1px 5px;
-  font-size: 16px;
-  font-weight: bold; 
-  border: 2px solid black;
-  cursor: pointer;
-  margin-right: 5px;
-  width: 35px;
-  height: 25px;
+.footbar {
+  position: fixed;
+  bottom: 15%;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: -1;
 }
-
-.button-container {
-  
+.search-bar {
+  display: flex;
   position: fixed;
   top: 10px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  left: 10px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
 }
 
-#refresh, #measureLine, #measurePolygon, #measureCircle, #imageDownload, #retrieve{
-  background-color: white;
-  color: black;
-  padding: 1px 5px;
-  font-size: 16px;
-  font-weight: bold; 
-  border: 2px solid black;
-  cursor: pointer;
-  margin-right: 5px;
-  width: 35px;
-  height: 25px;
-}
-
-.draw-container {
-  
-  position: fixed;
-  top: 140px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.download-container {
-  
-  position: fixed;
-  top: 250px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.retrieve-container {
-  
-  position: fixed;
-  top: 280px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-.custom-checkbox {
-  /* custom-checkbox 스타일 */
-  background-color: #f1f1f1;
-}
-
-.custom-checkbox.selected {
-  /* 선택된 custom-checkbox 스타일 */
-  background-color: #CCCCCC;
-  font-weight: bold;
-}
-
-.context-menu {
-  /* 컨텍스트 메뉴 스타일 */
-  position: absolute;
-  background-color: white;
-  border: 1px solid #CCCCCC;
+.search-bar input[type="text"] {
   padding: 10px;
-  display: none;
+  width: 200px;
+  margin-right: 10px;
 }
 
-.ol-tooltip {
-  position: relative;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
-  color: white;
-  padding: 4px 8px;
-  opacity: 0.7;
-  white-space: nowrap;
-  font-size: 12px;
-  cursor: default;
-  user-select: none;
+.search-bar button {
+  padding: 10px 20px;
 }
-.ol-tooltip-measure {
-  opacity: 1;
-  font-weight: bold;
-}
-.ol-tooltip-static {
-  background-color: #ffcc33;
-  color: black;
-  border: 1px solid white;
-}
-.ol-tooltip-measure:before,
-.ol-tooltip-static:before {
-  border-top: 6px solid rgba(0, 0, 0, 0.5);
-  border-right: 6px solid transparent;
-  border-left: 6px solid transparent;
-  content: "";
+
+#location {
+  display: flex;
   position: absolute;
-  bottom: -6px;
-  margin-left: -7px;
-  left: 50%;
+  bottom: 15%;
+  left: 27%;
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+
 }
-.ol-tooltip-static:before {
-  border-top-color: #ffcc33;
+
+#regionSelect {
+  width: 110px; /* 선택한 요소의 너비 */
+  height: 35px; /* 선택한 요소의 높이 */
+  font-size: 14px; /* 글꼴 크기 */
+  padding: 5px; /* 내부 여백 */
+  bottom: -1.7%;
+  left: 32%;
+  border: 1px solid #ccc; /* 테두리 스타일 */
+  border-radius: 4px; /* 테두리 둥글기 */
+  position: relative; /* 상대적 위치 설정 */
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  right: 15%;
+  top: 5%;
+  width: 300px; /* 팝업 창 가로 크기 */
+  padding: 20px;
+  background-color: #fefefe;
+  border: 1px solid #888;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto; /* 세로 스크롤을 허용 */
+  height: 700px; /* 팝업 창의 최대 높이 */
+}
+
+
+.popup-title {
+  font-size: 14px; /* 제목 폰트 사이즈 조정 */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+}
+
+
+.attrPopup {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  right: -5%;
+  bottom: 2%;
+  transform: translate(-50%, -50%);
+  width: 500px; /* 내용에 따라 유연하게 조정됨 */
+  padding: 20px;
+  background-color: #fefefe;
+  border: 1px solid #888;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.attrPopupTitle {
+  font-size: 14px; /* 제목 폰트 사이즈 조정 */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.attrPopupClose {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.attrPopupClose:hover,
+.attrPopupClose:focus {
+  color: black;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+#paging-info {
+  margin-top: 10px;
+}
+
+#prevPageButton, #nextPageButton {
+  margin-top: 10px;
+}
+
+
+.objPopup {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  width: 300px; /* 팝업 창 가로 크기 */
+  width: 300px; /* 팝업 창 가로 크기 */
+  padding: 20px;
+  background-color: #fefefe;
+  border: 1px solid #888;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.objPopupTitle {
+  font-size: 14px; /* 제목 폰트 사이즈 조정 */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.objPopupClose {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.objPopupClose:hover,
+.objPopupClose:focus {
+  color: black;
+  text-decoration: none;
+}
+
+
+.highlight {
+  background-color: yellow;
+}
+
+#layerName {
+  position: absolute;
+  background-color: white;
+  padding: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid black; /* 테두리를 추가합니다. */
+  width: 200px;
+}
+
+.searchPopup {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0%;
+  top: 5%;
+  width: 300px; /* 팝업 창 가로 크기 */
+  padding: 20px;
+  background-color: #fefefe;
+  border: 1px solid #888;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto; /* 세로 스크롤을 허용 */
+  height: 700px; /* 팝업 창의 최대 높이 */
+}
+
+
+.searchPopup-title {
+  font-size: 14px; /* 제목 폰트 사이즈 조정 */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.searchPopupclose {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.searchPopupclose:hover,
+.searchPopupclose:focus {
+  color: black;
+  text-decoration: none;
 }

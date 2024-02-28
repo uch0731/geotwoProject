@@ -6,59 +6,109 @@
             href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
             type="text/css">
         <link rel="stylesheet" href="projectMap.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script
             src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+
+
         <title>openlayers - dev-jhs</title>
     </head>
     <body>
         <div id="map" class="map" style="width:100%;height:80%;"></div>
-        <button id="layerButton">레이어 관리</button>
+        <button id="layerButton">⚙ 사용자 레이어 ▼</button>
         <div id="layerDropdown" class="dropdown-content">
+            <button id="layerUp">▲</button>
+            <button id="layerDown">▼</button>
+
             <div
-                draggable="true"
                 class="custom-checkbox"
-                onclick="toggleSelection(this)"
+                onclick="toggleSelection(this, event)"
                 oncontextmenu="showContextMenu(event, this); return false;">
-                <input type="checkbox" id="sggLayer">시군구 레이어
+                <input type="checkbox" id="schoolLayer">
+                <label id="schoolLayerLabel">학교 레이어</label>
             </div>
             <div
-                draggable="true"
                 class="custom-checkbox"
-                onclick="toggleSelection(this)"
+                onclick="toggleSelection(this, event)"
                 oncontextmenu="showContextMenu(event, this); return false;">
-                <input type="checkbox" id="roadLayer">도로 레이어
+                <input type="checkbox" id="buildingLayer">
+                <label id="buildingLayerLabel">빌딩 레이어</label>
             </div>
             <div
-                draggable="true"
                 class="custom-checkbox"
-                onclick="toggleSelection(this)"
+                onclick="toggleSelection(this, event)"
                 oncontextmenu="showContextMenu(event, this); return false;">
-                <input type="checkbox" id="buildingLayer">건물 레이어
+                <input type="checkbox" id="roadLayer">
+                <label id="roadLayerLabel">도로 레이어</label>
             </div>
             <div
-                draggable="true"
                 class="custom-checkbox"
-                onclick="toggleSelection(this)"
+                onclick="toggleSelection(this, event)"
                 oncontextmenu="showContextMenu(event, this); return false;">
-                <input type="checkbox" id="schoolLayer">학교 레이어
+                <input type="checkbox" id="sggLayer">
+                <label id="sggLayerLabel">시군구 레이어</label>
+
             </div>
+
         </div>
 
         <div class="context-menu" id="context-menu">
             <input id="opacity-input" type="range" min="0" max="1" step="0.01" value="1"/>
             <span id="opacity-output"></span>
             <div>
-                <button onclick="performFunction1()">기능1</button>
+                <button id="viewLayer">레이어 영역 이동</button>
             </div>
             <div>
-                <button onclick="performFunction1()">기능2</button>
+                <button id="layerInfo">레이어 정보</button>
             </div>
             <div>
-                <button onclick="performFunction1()">기능3</button>
+                <button id="layerAttr">속성 조회</button>
             </div>
         </div>
-        
-        <div id="mouseCoordinate"></div>
+
+        <div id="popup" class="popup">
+            <div id="popupTitle" class="popup-title"></div>
+            <span class="close">&times;</span>
+            <div>
+                <h4>데이터소스</h4>
+                <span id="layerDataSource"></span>
+            </div>
+            <div>
+                <h4>레이어이름</h4>
+                <span id="layerName" contenteditable="true" onkeydown="changeLayerName(event)">1000</span>
+            </div>
+            <div>
+                <h4>좌표계</h4>
+                <span id="layerSrs"></span>
+            </div>
+            <div>
+                <h4>BBOX</h4>
+                <span id="layerBBOX"></span>
+            </div>
+            <div>
+                <h4>SCHEMA</h4>
+                <table id="layerSchema"></table>
+            </div>
+            <div>
+                <button id="save">저장</button>
+                <button id="close2" onclick="closePopup()">닫기</button>
+            </div>
+        </div>
+
+        <div id="attrPopup" class="attrPopup">
+            <div id="attrPopupTitle" class="attrPopupTitle"></div>
+            <span class="attrPopupClose">&times;</span>
+            <div id="attrPopupContent"></div>
+            <div id="paging-info"></div>
+            <button id="prevPageButton">이전 페이지</button>
+            <button id="nextPageButton">다음 페이지</button>
+        </div>
+
+        <div id="objPopup" class="objPopup">
+            <div id="objPopupTitle" class="objPopupTitle"></div>
+            <span class="objPopupClose">&times;</span>
+            <table id="objPopupContent"></table>
+        </div>
 
         <div class="button-container">
             <button id="set-view">⛶</button>
@@ -70,9 +120,9 @@
 
         <div class="draw-container">
             <button id="refresh">↻</button>
-            <button id="measureLine">⋯</button>
-            <button id="measurePolygon">□ </button>
-            <button id="measureCircle">◌</button>
+            <button id="measureLine" class="color-change" onclick="changeColor(this)">⋯</button>
+            <button id="measurePolygon" class="color-change" onclick="changeColor(this)">□</button>
+            <button id="measureCircle" class="color-change" onclick="changeColor(this)">◌</button>
         </div>
 
         <div class="download-container">
@@ -80,10 +130,42 @@
         </div>
 
         <div class="retrieve-container">
-            <button id="retrieve">⌕</button>
+            <button id="retrieve" onclick="changeColor2(this)">⌕</button>
         </div>
 
-        <div id="scale-bar"></div>
+        <div class="background-container">
+            <button id="osm">OSM</button>
+            <button id="vworld">브이월드</button>
+        </div>
+
+        <select id="regionSelect"></select>
+
+        <!-- <span id="scale-bar" contenteditable="true"
+        onkeydown="applyScale(event)">1000</span> -->
+        <input id="scale-bar" onkeydown="applyScale(event)">
+
+        <div class="footbar">
+            <label for="scale" id="scale">Scale:</label>
+
+            <label for="location" id="location">위치:</label>
+            <div id="mouseCoordinate"></div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="검색어를 입력하세요">
+            <button onclick="clearInput()">초기화</button>
+            <button onclick="search()">검색</button>
+        </div>
+        <div id="searchPopup" class="searchPopup">
+            <div id="searchPopupTitle" class="searchPopup-title"></div>
+            <span class="searchPopupclose">&times;</span>
+            <div>
+                <table id="searchResult"></table>
+            </div>
+            <button id="prevPageSearch">이전 페이지</button>
+            <button id="nextPageSearch">다음 페이지</button>
+        </div>
+
         <script src="projectMap.js"></script>
     </body>
 </html>
